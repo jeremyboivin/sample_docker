@@ -1,0 +1,39 @@
+version: '2'
+services:
+  # A sample external service such as redis as presented here
+  redis:
+    # Get a redis image onto official docker repository
+    image: redis:latest
+    expose:
+      - 6379
+    container_name: redis
+    command: redis-server --port 6379
+    hostname: redis
+    ports:
+      - 6379:6379
+  my_personal_container:
+    container_name: project
+    entrypoint: /entrypoint-project.sh
+    hostname: client
+    image: MY_IMG
+    links:
+      - redis
+    ulimits:
+      core: 4
+    privileged: true
+    volumes:
+      - .:/shared
+  my_personal_container_with_var:
+    container_name: project2
+    entrypoint: /entrypoint-project2.sh
+    environment:
+      - ENVVAR="VALUE"
+    hostname: project2
+    image: MY_IMG
+    links:
+      - redis
+    ulimits:
+      core: 4
+    privileged: true
+    volumes:
+      - .:/shared
